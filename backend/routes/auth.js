@@ -2,8 +2,33 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const router = express.Router();
 
+const router = express.Router(); // Fix: Initialize router here
+
+// Register
+router.post('/register', async (req, res) => {
+    try {
+        const { username, email, password, role } = req.body;
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create new user
+        const newUser = new User({
+            username,
+            email,
+            password: hashedPassword,
+            role,
+        });
+
+        await newUser.save();
+        res.status(201).json({ message: 'User registered successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Login
 router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email });

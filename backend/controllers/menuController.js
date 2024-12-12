@@ -13,8 +13,8 @@ const getAllMenuItems = async (req, res) => {
 // Add a new menu item
 const addMenuItem = async (req, res) => {
     try {
-        const { name, description, price, category, availability } = req.body;
-        const newMenuItem = new Menu({ name, description, price, category, availability });
+        const { name, description, price, category, menuType, availability } = req.body;
+        const newMenuItem = new Menu({ name, description, price, category, menuType, availability });
         await newMenuItem.save();
         res.status(201).json(newMenuItem);
     } catch (error) {

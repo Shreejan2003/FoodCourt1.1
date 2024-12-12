@@ -1,17 +1,18 @@
 const express = require('express');
-const router = express.Router();
-const validateMenuRequest = require('../middlewares/validateMenuRequest');
 const {
     getAllMenuItems,
     addMenuItem,
     updateMenuItem,
     deleteMenuItem,
 } = require('../controllers/menuController');
+const roleMiddleware = require('../middlewares/roleMiddleware'); // For role-based access control
 
-// Routes with middleware
-router.get('/', getAllMenuItems);
-router.post('/', validateMenuRequest, addMenuItem);
-router.put('/:id', validateMenuRequest, updateMenuItem);
-router.delete('/:id', deleteMenuItem);
+const router = express.Router();
+
+// Routes
+router.get('/', getAllMenuItems); // Public: Get all menu items
+router.post('/', roleMiddleware(['Admin']), addMenuItem); // Admin: Add a new menu item
+router.put('/:id', roleMiddleware(['Admin']), updateMenuItem); // Admin: Update a menu item
+router.delete('/:id', roleMiddleware(['Admin']), deleteMenuItem); // Admin: Delete a menu item
 
 module.exports = router;
